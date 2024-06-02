@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdvancedLib\AdvancedLib.csproj" />
+    <ProjectReference Include="..\BinarySerializer.Nintendo\BinarySerializer.GBA.csproj" />
+    <ProjectReference Include="..\BinarySerializer\BinarySerializer.csproj" />
+  </ItemGroup>
+
+</Project>
