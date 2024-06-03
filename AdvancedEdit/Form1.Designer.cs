@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             menuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             openToolStripMenuItem = new ToolStripMenuItem();
@@ -35,9 +36,12 @@
             saveFileDialog = new SaveFileDialog();
             deserializeWorker = new System.ComponentModel.BackgroundWorker();
             splitContainer1 = new SplitContainer();
+            gridBox1 = new GridBox(components);
             menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
             splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)gridBox1).BeginInit();
             SuspendLayout();
             // 
             // menuStrip
@@ -77,9 +81,33 @@
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Location = new Point(0, 24);
             splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(gridBox1);
             splitContainer1.Size = new Size(877, 568);
             splitContainer1.SplitterDistance = 663;
             splitContainer1.TabIndex = 1;
+            // 
+            // gridBox1
+            // 
+            gridBox1.AllowMultiSelection = false;
+            gridBox1.BoxSize = new Size(16, 16);
+            gridBox1.CanvasSize = new Size(128, 128);
+            gridBox1.Enabled = false;
+            gridBox1.HoverBox = true;
+            gridBox1.HoverColor = Color.White;
+            gridBox1.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            gridBox1.Location = new Point(5, 5);
+            gridBox1.Name = "gridBox1";
+            gridBox1.Selectable = true;
+            gridBox1.SelectedIndex = -1;
+            gridBox1.SelectionColor = Color.Red;
+            gridBox1.SelectionRectangle = new Rectangle(0, 0, 1, 1);
+            gridBox1.Size = new Size(655, 563);
+            gridBox1.TabIndex = 0;
+            gridBox1.TabStop = false;
+            gridBox1.Paint += gridBox1_Paint;
             // 
             // Form1
             // 
@@ -94,8 +122,10 @@
             Text = "Form1";
             menuStrip.ResumeLayout(false);
             menuStrip.PerformLayout();
+            splitContainer1.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)gridBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -109,5 +139,6 @@
         private SaveFileDialog saveFileDialog;
         private System.ComponentModel.BackgroundWorker deserializeWorker;
         private SplitContainer splitContainer1;
+        private GridBox gridBox1;
     }
 }

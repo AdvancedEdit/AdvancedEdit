@@ -17,8 +17,8 @@ public class Manager
 
     public static Region region;
 
-    ROMHeader header { get; set; }
-    TrackManager trackManager { get; set; }
+    public ROMHeader header { get; set; }
+    public TrackManager trackManager { get; set; }
     
     public Manager() {
         context.AddPreDefinedPointers(new Dictionary<Region, long>()

@@ -1,6 +1,7 @@
 using AdvancedLib.Types;
 using BinarySerializer;
 using BinarySerializer.GBA;
+using System.Drawing;
 using System.Linq;
 
 namespace AdvancedLib.Serialize;
@@ -49,10 +50,6 @@ public class Tileset : BinarySerializable
             indicies = Tile.GetTileBytes(value);
         }
     }
-    public long size { get {
-            RecalculateSize();
-            return SerializedSize;
-        } }
     byte[][] tileParts = new byte[4][];
     public override void SerializeImpl(SerializerObject s)
     {

@@ -9,21 +9,22 @@ namespace AdvancedLib.Serialize;
 
 public class TrackManager : BinarySerializable
 {
-    Track[] tracks { get; set; }
-    Pointer[] trackPointers { get; set; }
+    public Track[] tracks { get; set; }
+    public Pointer[] trackPointers { get; set; }
     public override void SerializeImpl(SerializerObject s)
     {
         Pointer basePointer = s.GetPreDefinedPointer(Manager.region);
 
-        s.DoAt(basePointer, () => {
-            trackPointers = s.SerializePointerArray(trackPointers, 48, PointerSize.Pointer32, basePointer, name: nameof(trackPointers));
-        });
+        trackPointers = s.DoAt(basePointer, () =>
+            s.SerializePointerArray(trackPointers, 48, PointerSize.Pointer32, basePointer, name: nameof(trackPointers))
+        );
         tracks ??= new Track[trackPointers.Length];
         for (int i = 0; i < trackPointers.Length; i++)
         {
-            s.DoAt(trackPointers[i], () => {
-                tracks[i] = s.SerializeObject<Track>(tracks[i], name: $"track{i}");
-            });
+            if (!(i==20|| i == 21 || i == 22 || i == 23)) // battle tracks have messed up layouts?
+            tracks[i] = s.DoAt(trackPointers[i], () => 
+                s.SerializeObject<Track>(tracks[i], name: $"track{i}")
+            );
         }
     }
 }

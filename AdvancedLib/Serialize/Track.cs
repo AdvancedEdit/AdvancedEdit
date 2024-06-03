@@ -43,7 +43,6 @@ public class Track : BinarySerializable
     public Pointer objectPalettePointer { get; set; }
     // TODO implement objectPalette
     public Tileset tileset { get; set; }
-    // TODO implement 
     public Layout layout { get; set; }
 
 
@@ -60,8 +59,8 @@ public class Track : BinarySerializable
         tilesetLookback = s.Serialize<uint>(tilesetLookback,nameof(tilesetLookback));
 
         s.SerializePadding(12);
-        
-        s.SerializePointer(layoutPointers, PointerSize.Pointer32, basePointer, name: nameof(layoutPointers));
+
+        layoutPointers = s.SerializePointer(layoutPointers, PointerSize.Pointer32, basePointer, name: nameof(layoutPointers));
         
         s.SerializePadding(60);
 
@@ -90,23 +89,21 @@ public class Track : BinarySerializable
         
         s.SerializePadding(20);
 
-        s.DoAt(palettePointer, () => {
-            palette = s.SerializeObject(palette, name: nameof(palette));
-        });
+        palette = s.DoAt(palettePointer, () => 
+            s.SerializeObject(palette, name: nameof(palette))
+        );
+
+        layout = s.DoAt(layoutPointers, () => 
+            s.SerializeObject<Layout>(layout,onPreSerialize: x => x.size = new(trackWidth,trackHeight), name: nameof(layout))
+        );
 
         // TODO: Implement tileset lookback
         if (tilesetPartsPointer.AbsoluteOffset != palettePointer.AbsoluteOffset)
         {
-            s.DoAt(tilesetPartsPointer, () =>
-            {
-                tileset = s.SerializeObject<Tileset>(tileset, name: nameof(tileset));
-            });
+            tileset = s.DoAt(tilesetPartsPointer, () => 
+                s.SerializeObject<Tileset>(tileset, name: nameof(tileset))
+            );
         }
         else { }
-        
-
-        s.DoAt(layoutPointers, ()=> { 
-            layout = s.SerializeObject<Layout>(layout, name: nameof(layout));
-        });
     }
 }
