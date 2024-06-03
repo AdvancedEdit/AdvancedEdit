@@ -44,5 +44,9 @@ namespace AdvancedEdit
             if (!loaded) return;
             trackDrawer.DrawTrack(e.Graphics,0);
         }
+
+        private void gridBox1_Resize(object sender, EventArgs e){
+            trackDrawer.ResizeCache();
+        }
     }
 }

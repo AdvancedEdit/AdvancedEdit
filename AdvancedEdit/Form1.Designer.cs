@@ -108,6 +108,7 @@
             gridBox1.TabIndex = 0;
             gridBox1.TabStop = false;
             gridBox1.Paint += gridBox1_Paint;
+            gridBox1.Resize += gridBox1_Resize;
             // 
             // Form1
             // 

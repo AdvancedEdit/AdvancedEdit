@@ -47,7 +47,11 @@ namespace AdvancedEdit.Gfx
             RegenerateCache();
         }
 
-        private void RegenerateCache()
+        /// <summary>
+        /// A cache generator optimized for resizing a control.
+        /// Changes cache image to control size.
+        /// </summary>
+        public void RegenerateCache()
         {
             trackCache.Dispose();
 
@@ -65,11 +69,51 @@ namespace AdvancedEdit.Gfx
                 {
                     for (int y = 0; y < tileCountY; y++)
                     {
-                        Tile tile = tilePalette[indicies[x, y]];
+                        Tile tile = tilePalette[indicies[y, x]]; //Switching the order fixes tile rotation.
                         g.DrawImage(tile.ToImage(track.palette), x * 8, y * 8);
                     }
                 }
             }
+        }
+
+        public void ResizeCache(){
+            var oldSize = imageSize;
+            int imageWidth = (int)(control.Width / zoom);
+            int imageHeight = (tileCache.Length / (imageWidth / 8)) * 8;
+            
+            imageSize = new Size(imageWidth, imageHeight);
+
+            int tileCountX = Math.Clamp(imageSize.Width / 8,0,track.trackWidth*128);
+            int tileCountY = Math.Clamp(imageSize.Height / 8,0,track.trackWidth*128);
+            int oldTileCountX = Math.Clamp(oldSize.Height / 8,0,track.trackWidth*128);
+            int oldTileCountY = Math.Clamp(oldSize.Height / 8,0,track.trackWidth*128);
+            
+            Bitmap tempCache = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format32bppPArgb);
+            using (Graphics g = Graphics.FromImage(tempCache))
+            {
+                g.DrawImage(tempCache,0,0,oldSize.Width, oldSize.Height);
+                if( tileCountX > oldTileCountX ){
+                    for (int x = oldTileCountX; x < tileCountX; x++)
+                    {
+                        for (int y = 0; y < tileCountY; y++)
+                        {
+                            Tile tile = tilePalette[indicies[y, x]];
+                            g.DrawImage(tile.ToImage(track.palette), x * 8, y * 8);
+                        }
+                    }
+                }
+                if( tileCountY > oldTileCountY ){
+                    for (int x = 0; x < tileCountX; x++)
+                    {
+                        for (int y = oldTileCountY; y < tileCountY; y++)
+                        {
+                            Tile tile = tilePalette[indicies[y, x]];
+                            g.DrawImage(tile.ToImage(track.palette), x * 8, y * 8);
+                        }
+                    }
+                }
+            }
+
         }
 
         public void DrawTrack(Graphics g, int selectedTile)
