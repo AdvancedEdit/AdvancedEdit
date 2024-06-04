@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace AdvancedEdit.Gfx;
 public static class TileExtensions
 {
-    public static Bitmap ToImage(this Tile tile, Palette64 palette)
+    public static Bitmap ToImage(this Tile tile, Palette palette)
     {
         Bitmap bmp = new Bitmap(8,8);
         int x, y;

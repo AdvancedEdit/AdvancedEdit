@@ -5,7 +5,7 @@ namespace AdvancedLib.Types{
     /// <summary>
     /// Palette of BGR555 colors
     /// </summary>
-    public class Palette64 : BinarySerializable
+    public class Palette : BinarySerializable
     {
         public BgrColor[] palette;
         public byte[] rawPalette {
@@ -30,16 +30,16 @@ namespace AdvancedLib.Types{
                 this.palette = pal;
             }
         }
-        public Palette64(BgrColor[] pal)
+        public Palette(BgrColor[] pal)
         {
             palette = pal;
         }
-        public Palette64()
+        public Palette()
         {
             palette = new BgrColor[64];
             for (int i = 0; i < palette.Length; i++) { BgrColor? p = palette[i]; p = new BgrColor(); }
         }
-        public Palette64(byte[] rawPalette)
+        public Palette(byte[] rawPalette)
         {
             BgrColor[] pal = new BgrColor[rawPalette.Length / 2];
             for (int i = 0; i < rawPalette.Length; i += 2)

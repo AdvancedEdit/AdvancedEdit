@@ -20,7 +20,7 @@ public class Track : BinarySerializable
     public Pointer tilesetPartsPointer { get; set; }
     public Pointer[] tilesetPartPointers { get; set; }
     public Pointer palettePointer { get; set; }
-    public Palette64 palette { get; set; }
+    public Palette palette { get; set; }
     public Pointer tileBehaviorsPointer { get; set; }
     public byte[] tileBehaviors { get; set; } // TODO implement behaviors type
     public Pointer objectsPointer { get; set; }
