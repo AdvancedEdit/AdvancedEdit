@@ -404,6 +404,9 @@ namespace BinarySerializer
 
             switch (size)
             {
+                case PointerSize.Pointer8:
+                    Writer.Write((byte)valueToSerialize);
+                    break;
                 case PointerSize.Pointer16:
                     Writer.Write((ushort)valueToSerialize);
                     break;

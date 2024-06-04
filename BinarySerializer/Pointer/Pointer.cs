@@ -65,6 +65,7 @@ namespace BinarySerializer
         {
             return Size switch
             {
+                PointerSize.Pointer8  => $"{value:X2}",
                 PointerSize.Pointer16 => $"{value:X4}",
                 PointerSize.Pointer32 => $"{value:X8}",
                 PointerSize.Pointer64 => $"{value:X16}",

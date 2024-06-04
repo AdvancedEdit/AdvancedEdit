@@ -489,6 +489,7 @@ namespace BinarySerializer
             // Read the pointer value
             long value = size switch
             {
+                PointerSize.Pointer8  => Reader.ReadByte(),
                 PointerSize.Pointer16 => Reader.ReadUInt16(),
                 PointerSize.Pointer32 => Reader.ReadUInt32(),
                 PointerSize.Pointer64 => Reader.ReadInt64(),

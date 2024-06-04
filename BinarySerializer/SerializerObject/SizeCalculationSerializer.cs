@@ -303,6 +303,7 @@ namespace BinarySerializer
         {
             CurrentFilePosition += size switch
             {
+                PointerSize.Pointer8  => 1,
                 PointerSize.Pointer16 => 2,
                 PointerSize.Pointer32 => 4,
                 PointerSize.Pointer64 => 8,
@@ -326,6 +327,7 @@ namespace BinarySerializer
 
                 CurrentFilePosition += size switch
                 {
+                    PointerSize.Pointer8  => 1,
                     PointerSize.Pointer16 => 2,
                     PointerSize.Pointer32 => 4,
                     PointerSize.Pointer64 => 8,

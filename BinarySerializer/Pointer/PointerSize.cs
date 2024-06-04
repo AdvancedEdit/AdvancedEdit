@@ -5,6 +5,7 @@
     /// </summary>
     public enum PointerSize
     {
+        Pointer8  = 1,
         Pointer16 = 2,
         Pointer32 = 4,
         Pointer64 = 8,
