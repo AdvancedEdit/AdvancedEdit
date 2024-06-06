@@ -1,8 +1,8 @@
 using BinarySerializer;
 
-namespace AdvancedLib;
+namespace AdvancedLib.Serialize;
 
-class AiHeader : BinarySerializable{
+public class AiHeader : BinarySerializable{
     byte zonesCount {get; set;}
     Pointer zonesPointer {get; set;}
     Pointer targetsPointer {get; set;}

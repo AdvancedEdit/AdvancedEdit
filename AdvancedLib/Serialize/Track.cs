@@ -50,7 +50,6 @@ public class Track : BinarySerializable
     public Layout layout { get; set; }
 
 
-#pragma warning enable
     public override void SerializeImpl(SerializerObject s)
     {
         Pointer basePointer = s.CurrentPointer;
