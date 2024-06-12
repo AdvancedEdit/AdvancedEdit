@@ -39,7 +39,7 @@ public class Track : BinarySerializable
     public uint data0;
     public uint trackRoutine { get; set; }
     public Pointer minimapPointer { get; set; }
-    // TODO implement minimap
+    public Minimap minimap { get; set; }
     public Pointer aiZonesPointer { get; set; }
     // TODO implement AI zones
     public Pointer objectGfxPointer { get; set; }
@@ -58,12 +58,10 @@ public class Track : BinarySerializable
             magic,
             nameof(magic)
         );
-
         trackWidth = s.Serialize<byte>(
             trackWidth,
             nameof(trackWidth)
         );
-
         trackHeight = s.Serialize<byte>(
             trackHeight,
             nameof(trackHeight)
@@ -93,34 +91,29 @@ public class Track : BinarySerializable
             basePointer,
             name: nameof(tilesetPartPointers)
         );
-
         palettePointer = s.SerializePointer(
             palettePointer,
             PointerSize.Pointer32,
             basePointer,
             name: nameof(palettePointer)
         );
-
         tileBehaviorsPointer = s.SerializePointer(
             tileBehaviorsPointer,
             PointerSize.Pointer32,
             basePointer,
             name: nameof(tileBehaviorsPointer)
         );
-
         objectsPointer = s.SerializePointer(
             objectsPointer,
             PointerSize.Pointer32,
             basePointer,
             name: nameof(objectsPointer)
         );
-
         overlayPointer = s.SerializePointer(overlayPointer,
             PointerSize.Pointer32,
             basePointer,
             name: nameof(overlayPointer)
         );
-
         overlayPointer = s.SerializePointer(
             overlayPointer,
             PointerSize.Pointer32,
@@ -207,5 +200,18 @@ public class Track : BinarySerializable
             );
         }
         else { }
+    }
+    public void UpdatePointers()
+    {
+        int position = 0;
+
+        // Header
+        position += 256;
+
+        layout.RecalculateSize();
+        position += (int)layout.SerializedSize;
+
+        
+        tileset.RecalculateSize();
     }
 }

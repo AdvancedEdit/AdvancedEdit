@@ -16,7 +16,7 @@ public class Layout : BinarySerializable
             byte[] a = new byte[4096 * size.Width * size.Height * 4];
             for (int i = 0; i < size.Width * size.Height * 4; i++)
             {
-                Array.Copy(tileParts[i], 0, a, 4096 * i, 4096);
+                Array.Copy(layoutBlocks[i].data, 0, a, 4096 * i, 4096);
             }
             return a;
         }
@@ -25,7 +25,7 @@ public class Layout : BinarySerializable
             if (value.Length != 4096 * size.Width * size.Height * 4) return;
             for (int i = 0; i < size.Width * size.Height * 4; i++)
             {
-                tileParts[i] = value[(4096 * i)..(4096 * (i+1))];
+                layoutBlocks[i].data = value[(4096 * i)..(4096 * (i+1))];
             }
         }
     }
@@ -47,20 +47,36 @@ public class Layout : BinarySerializable
 
     public Size size { get; set; }
 
-    public byte[][] tileParts { get; set; }
+    public CompressedBlock[] layoutBlocks { get; set; }
     public override void SerializeImpl(SerializerObject s)
     {
         int partsCount = size.Width * size.Height * 4;
-        tileParts = new byte[size.Width * size.Height * 4][];
+        layoutBlocks = new CompressedBlock[partsCount];
         Pointer basePointer = s.CurrentPointer;
 
         layoutPointers = s.SerializePointerArray(layoutPointers, partsCount, PointerSize.Pointer16, basePointer, name:nameof(layoutPointers));
 
         for (int i = 0; i < partsCount; i++)
         {
-            s.DoAtEncoded(layoutPointers[i], new LZSSEncoder(), () => 
-                tileParts[i] = s.SerializeArray<byte>(tileParts[i], 4096, $"layoutPart{i}")
+            s.DoAt(layoutPointers[i], () =>
+                layoutBlocks[i] = s.SerializeObject<CompressedBlock>(layoutBlocks[i], name:$"layoutPart{i}")
             );
         }
+    }
+    public override void RecalculateSize()
+    {
+        int position = 0;
+
+        position = layoutPointers.Length * 2;
+
+        for (int i = 0; i < layoutBlocks.Length; i++)
+        {
+            CompressedBlock block = layoutBlocks[i];
+            layoutPointers[i] = new Pointer(position, layoutPointers[i].File, layoutPointers[i].Anchor, PointerSize.Pointer16);
+            block.RecalculateSize();
+            position += (int)block.SerializedSize;
+        }
+
+        base.RecalculateSize();
     }
 }

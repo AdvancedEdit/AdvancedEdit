@@ -8,7 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdvancedEdit;
+// Based of the gridBox implementation from minishmaker/minishmaker
+namespace AdvancedEdit.Components;
 public partial class GridBox : PictureBox
 {
     private Color hoverColor = Color.White;
@@ -29,17 +30,24 @@ public partial class GridBox : PictureBox
     public Point chestHighlightPoint = new Point(-1, -1);
     public Point listObjectHighlightPoint = new Point(-1, -1);
     public Point warpHighlightPoint = new Point(-1, -1);
+    public Size mapSize = new Size(128,128);
+
+    // Events
+    public event EventHandler TileClick;
+
     public GridBox()
     {
         InitializeComponent();
         SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
     }
+    
     public GridBox(IContainer container)
     {
         container.Add(this);
         InitializeComponent();
         SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
     }
+    #region Properties
     [Description("The window's update mode."), Browsable(true)]
     public InterpolationMode InterpolationMode
     {
@@ -105,9 +113,11 @@ public partial class GridBox : PictureBox
         get { return allowMultiSelection; }
         set { allowMultiSelection = value; }
     }
+    #endregion
     protected override void OnPaint(PaintEventArgs e)
     {
         e.Graphics.InterpolationMode = mode;
+        e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
         try
         {
             base.OnPaint(e);
@@ -144,14 +154,14 @@ public partial class GridBox : PictureBox
                     e.Graphics.DrawLine(selectionPen, warpHighlightPoint.X - 15, warpHighlightPoint.Y, warpHighlightPoint.X + 15, warpHighlightPoint.Y);
                     e.Graphics.DrawLine(selectionPen, warpHighlightPoint.X, warpHighlightPoint.Y - 15, warpHighlightPoint.X, warpHighlightPoint.Y + 15);
                 }
-            }
-            if (canHover)
+            }   
+        }
+        if (canHover)
+        {
+            if (hoverIndex != -1)
             {
-                if (hoverIndex != -1)
-                {
-                    Point p = GetIndexPoint(hoverIndex);
-                    e.Graphics.DrawRectangle(new Pen(hoverColor), p.X, p.Y, selectionSize.Width - 1, selectionSize.Height - 1);
-                }
+                Point p = GetIndexPoint(hoverIndex);
+                e.Graphics.DrawRectangle(new Pen(hoverColor), p.X, p.Y, selectionSize.Width - 1, selectionSize.Height - 1);
             }
         }
     }
@@ -163,7 +173,7 @@ public partial class GridBox : PictureBox
         int y = i / width;
         return new Point(x * selectionSize.Width, y * selectionSize.Height);
     }
-    private void GridBox_MouseMove(object sender, MouseEventArgs e)
+    private void GridBox_MouseMove(object sender, MouseEventArgs mouse)
     {
         int x;
         int y;
@@ -171,8 +181,8 @@ public partial class GridBox : PictureBox
         int height;
         if (allowMultiSelection && startSelection != -1)
         {
-            x = e.X / selectionSize.Width;
-            y = e.Y / selectionSize.Height;
+            x = mouse.X / selectionSize.Width;
+            y = mouse.Y / selectionSize.Height;
             width = x - selectionRectangle.X + 1;
             height = y - selectionRectangle.Y + 1;
             if (width > 0)
@@ -190,7 +200,7 @@ public partial class GridBox : PictureBox
             Invalidate();
             return;
         }
-        if (e.X < 0 || e.Y < 0 || e.X >= canvas.Width || e.Y >= canvas.Height)
+        if (mouse.X < 0 || mouse.Y < 0 || mouse.X >= canvas.Width || mouse.Y >= canvas.Height)
         {
             if (hoverIndex != -1)
             {
@@ -202,9 +212,13 @@ public partial class GridBox : PictureBox
         }
         width = (canvas.Width / selectionSize.Width);
         height = (canvas.Height / selectionSize.Height);
-        x = e.X / selectionSize.Width;
-        y = e.Y / selectionSize.Height;
+        x = mouse.X / selectionSize.Width;
+        y = mouse.Y / selectionSize.Height;
         hoverIndex = x + y * width;
+        if (mouse.Button == MouseButtons.Left)
+        {
+            TileClick.Invoke(this, new TileClickArgs() { clickPoint = new Point(x,y)});
+        }
         if (canHover)
         {
             if (lastHoverIndex != hoverIndex)
@@ -242,12 +256,19 @@ public partial class GridBox : PictureBox
     }
     private void GridBox_Resize(object sender, EventArgs e)
     {
-        if (Image != null)
-        {
-            canvas.Width = Image.Width;
-            canvas.Height = Image.Height;
-            Invalidate();
-        }
+        Width = Math.Clamp(Width, 256, 16384);
+        Height = Math.Clamp(Height, 256, 16384);
+
+        BoxSize = new Size(Width/mapSize.Width, Height/ mapSize.Height);
+
+        canvas.Width = Width;
+        canvas.Height = Height;
+
+        Invalidate();
     }
 }
 
+class TileClickArgs : EventArgs
+{
+    public Point clickPoint { get; set; }
+} 

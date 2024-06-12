@@ -1,4 +1,5 @@
-﻿namespace AdvancedEdit
+﻿using AdvancedEdit.Components;
+namespace AdvancedEdit
 {
     partial class Form1
     {
@@ -32,15 +33,19 @@
             menuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             openToolStripMenuItem = new ToolStripMenuItem();
+            saveToolStripMenuItem = new ToolStripMenuItem();
+            saveAsToolStripMenuItem = new ToolStripMenuItem();
             openFileDialog = new OpenFileDialog();
             saveFileDialog = new SaveFileDialog();
             deserializeWorker = new System.ComponentModel.BackgroundWorker();
             splitContainer1 = new SplitContainer();
+            panPanel1 = new PanPanel(components);
             gridBox1 = new GridBox(components);
             menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.SuspendLayout();
+            panPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridBox1).BeginInit();
             SuspendLayout();
             // 
@@ -55,7 +60,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, saveToolStripMenuItem, saveAsToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
@@ -63,9 +68,23 @@
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(103, 22);
+            openToolStripMenuItem.Size = new Size(180, 22);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
+            // 
+            // saveToolStripMenuItem
+            // 
+            saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            saveToolStripMenuItem.Size = new Size(180, 22);
+            saveToolStripMenuItem.Text = "Save";
+            saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            saveAsToolStripMenuItem.Size = new Size(180, 22);
+            saveAsToolStripMenuItem.Text = "Save As";
+            saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
             // 
             // openFileDialog
             // 
@@ -84,31 +103,41 @@
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(gridBox1);
+            splitContainer1.Panel1.AutoScroll = true;
+            splitContainer1.Panel1.Controls.Add(panPanel1);
             splitContainer1.Size = new Size(877, 568);
             splitContainer1.SplitterDistance = 663;
             splitContainer1.TabIndex = 1;
             // 
+            // panPanel1
+            // 
+            panPanel1.AutoScroll = true;
+            panPanel1.Controls.Add(gridBox1);
+            panPanel1.Dock = DockStyle.Fill;
+            panPanel1.Location = new Point(0, 0);
+            panPanel1.Name = "panPanel1";
+            panPanel1.Size = new Size(663, 568);
+            panPanel1.TabIndex = 0;
+            // 
             // gridBox1
             // 
             gridBox1.AllowMultiSelection = false;
-            gridBox1.BoxSize = new Size(16, 16);
-            gridBox1.CanvasSize = new Size(128, 128);
+            gridBox1.BoxSize = new Size(2, 2);
+            gridBox1.CanvasSize = new Size(338, 326);
             gridBox1.Enabled = false;
             gridBox1.HoverBox = true;
             gridBox1.HoverColor = Color.White;
             gridBox1.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            gridBox1.Location = new Point(5, 5);
+            gridBox1.Location = new Point(0, 0);
             gridBox1.Name = "gridBox1";
-            gridBox1.Selectable = true;
+            gridBox1.Selectable = false;
             gridBox1.SelectedIndex = -1;
-            gridBox1.SelectionColor = Color.Red;
+            gridBox1.SelectionColor = Color.Gold;
             gridBox1.SelectionRectangle = new Rectangle(0, 0, 1, 1);
-            gridBox1.Size = new Size(655, 563);
+            gridBox1.Size = new Size(338, 326);
+            gridBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             gridBox1.TabIndex = 0;
             gridBox1.TabStop = false;
-            gridBox1.Paint += gridBox1_Paint;
-            gridBox1.Resize += gridBox1_Resize;
             // 
             // Form1
             // 
@@ -126,6 +155,7 @@
             splitContainer1.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            panPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)gridBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -141,5 +171,8 @@
         private System.ComponentModel.BackgroundWorker deserializeWorker;
         private SplitContainer splitContainer1;
         private GridBox gridBox1;
+        private PanPanel panPanel1;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem saveAsToolStripMenuItem;
     }
 }

@@ -16,6 +16,7 @@ public class Manager
     Context context = new Context("", serializerLogger: new FileSerializerLogger("C:\\Users\\apler\\Downloads\\Log.txt"));
 
     public static Region region;
+    private string path;
 
     public ROMHeader header { get; set; }
     public TrackManager trackManager { get; set; }
@@ -35,12 +36,12 @@ public class Manager
     /// <param name="path">Path the file</param>
     /// <returns>Open was a success?</returns>
     public bool Open(string path){
-        file = new LinearFile(context, path, Endian.Little);
-        context.AddFile(file);
+        this.path = path;
+        context.AddFile(new LinearFile(context, path, Endian.Little) { 
+            RecreateOnWrite = false,
+        });
 
-        BinaryDeserializer s = new BinaryDeserializer(context);
-
-        s.Goto(new Pointer(0, file));
+        /*s.Goto(new Pointer(0, file));
 
         header = s.SerializeObject<ROMHeader>(header, name: nameof(header));
         switch (header.GameCode)
@@ -56,9 +57,9 @@ public class Manager
                 break;
             default:
                 return false;
-        }
+        }*/
 
-       
+
 
         return true;
     }
@@ -66,21 +67,18 @@ public class Manager
     /// Decompress entire ROM
     /// </summary>
     public void Deserialize(){
-        BinaryDeserializer s = new BinaryDeserializer(context);
-
-        s.Goto(new Pointer(0, file));
-
-        trackManager = s.SerializeObject<TrackManager>(trackManager, name: nameof(trackManager));
+        trackManager = FileFactory.Read<TrackManager>(context, path);
     }
     /// <summary>
     /// Reserialize entire ROM
     /// </summary>
-    public void Reserialize(){
-        BinarySerializer.BinarySerializer s = new BinarySerializer.BinarySerializer(context);
-
-        s.Goto(new Pointer(0, file));
-
-        trackManager = s.SerializeObject<TrackManager>(trackManager, name: nameof(trackManager));
+    public void Save(string? path){
+        if (!File.Exists(path) && path != null) {
+            File.Create(path);
+            context.AddFile(new LinearFile(context, this.path, Endian.Little));
+        }
+        
+        FileFactory.Write<TrackManager>(context, path ?? this.path);
     }
 }
 

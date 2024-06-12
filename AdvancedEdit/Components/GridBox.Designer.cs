@@ -1,4 +1,4 @@
-﻿namespace AdvancedEdit;
+﻿namespace AdvancedEdit.Components;
 partial class GridBox
 {
     /// <summary> 
@@ -29,12 +29,12 @@ partial class GridBox
         // 
         // GridBox
         // 
-        this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridBox_Paint);
-        this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridBox_MouseDown);
+        this.Paint      += new System.Windows.Forms.PaintEventHandler(this.GridBox_Paint);
+        this.MouseDown  += new System.Windows.Forms.MouseEventHandler(this.GridBox_MouseDown);
+        this.MouseUp    += new System.Windows.Forms.MouseEventHandler(this.GridBox_MouseUp);
         this.MouseLeave += new System.EventHandler(this.GridBox_MouseLeave);
-        this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridBox_MouseMove);
-        this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridBox_MouseUp);
-        this.Resize += new System.EventHandler(this.GridBox_Resize);
+        this.MouseMove  += new System.Windows.Forms.MouseEventHandler(this.GridBox_MouseMove);
+        this.Resize     += new System.EventHandler(this.GridBox_Resize);
         ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
         this.ResumeLayout(false);
     }

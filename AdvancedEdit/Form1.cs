@@ -1,13 +1,14 @@
 using AdvancedEdit.Gfx;
 using AdvancedLib;
 using System.ComponentModel;
+using AdvancedEdit.Components;
 
 namespace AdvancedEdit
 {
     public partial class Form1 : Form
     {
         Manager manager;
-        TrackDrawer trackDrawer;
+        Gfx.TrackEditor trackEditor;
 
         public static bool loaded = false;
         public Form1()
@@ -32,21 +33,24 @@ namespace AdvancedEdit
 
         private void deserializeWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            trackDrawer = new TrackDrawer(gridBox1);
-            trackDrawer.LoadTrack(manager.trackManager.tracks[0]);
+            trackEditor = new TrackEditor(gridBox1);
+            trackEditor.LoadTrack(manager.trackManager.tracks[24]);
 
             gridBox1.Enabled = true;
             loaded = true;
         }
 
-        private void gridBox1_Paint(object sender, PaintEventArgs e)
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!loaded) return;
-            trackDrawer.DrawTrack(e.Graphics,0);
+            manager.Save(null);
         }
 
-        private void gridBox1_Resize(object sender, EventArgs e){
-            trackDrawer.ResizeCache();
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                manager.Save(saveFileDialog.FileName);
+            }
         }
     }
 }

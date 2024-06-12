@@ -12,17 +12,17 @@ public class Tileset : BinarySerializable
     public byte[] indicies { 
         get {
             byte[] a = new byte[4096 * 4];
-            Array.Copy(tileParts[0], 0, a, 4096 * 0, 4096);
-            Array.Copy(tileParts[1], 0, a, 4096 * 1, 4096);
-            Array.Copy(tileParts[2], 0, a, 4096 * 2, 4096);
-            Array.Copy(tileParts[3], 0, a, 4096 * 3, 4096);
+            Array.Copy(tileBlocks[0].data, 0, a, 4096 * 0, 4096);
+            Array.Copy(tileBlocks[1].data, 0, a, 4096 * 1, 4096);
+            Array.Copy(tileBlocks[2].data, 0, a, 4096 * 2, 4096);
+            Array.Copy(tileBlocks[3].data, 0, a, 4096 * 3, 4096);
             return a; 
         } set {
             if (value.Length != 4096 * 4) throw new Exception("Bad input array!");
-            tileParts[0] = value[(4096 * 0)..(4096 * 1)];
-            tileParts[1] = value[(4096 * 1)..(4096 * 2)];
-            tileParts[2] = value[(4096 * 2)..(4096 * 3)];
-            tileParts[3] = value[(4096 * 3)..(4096 * 4)];
+            tileBlocks[0].data = value[(4096 * 0)..(4096 * 1)];
+            tileBlocks[1].data = value[(4096 * 1)..(4096 * 2)];
+            tileBlocks[2].data = value[(4096 * 2)..(4096 * 3)];
+            tileBlocks[3].data = value[(4096 * 3)..(4096 * 4)];
         } }
     public byte[,] indicies2d
     {
@@ -50,16 +50,32 @@ public class Tileset : BinarySerializable
             indicies = Tile.GetTileBytes(value);
         }
     }
-    byte[][] tileParts = new byte[4][];
+    CompressedBlock[] tileBlocks = new CompressedBlock[4];
     public override void SerializeImpl(SerializerObject s)
     {
         Pointer basePointer = s.CurrentPointer;
         tilePointers = s.SerializePointerArray(tilePointers,4,PointerSize.Pointer16, basePointer, name: nameof(tilePointers));
         for (int i = 0; i < tilePointers.Length; i++)
         {
-            s.DoAtEncoded(tilePointers[i],new LZSSEncoder(), () => {
-                tileParts[i] = s.SerializeArray<byte>(tileParts[i], 4096, "tilePart");
-            });
+            s.DoAt(tilePointers[i], () =>
+                tileBlocks[i] = s.SerializeObject<CompressedBlock>(tileBlocks[i], name: $"layoutPart{i}")
+            );
         }
+    }
+    public override void RecalculateSize()
+    {
+        int position = 0;
+
+        position = tilePointers.Length * 2;
+
+        for (int i = 0; i < tileBlocks.Length; i++)
+        {
+            CompressedBlock block = tileBlocks[i];
+            tilePointers[i] = new Pointer(position, tilePointers[i].File, tilePointers[i].Anchor, PointerSize.Pointer16);
+            block.RecalculateSize();
+            position += (int)block.SerializedSize;
+        }
+
+        base.RecalculateSize();
     }
 }
