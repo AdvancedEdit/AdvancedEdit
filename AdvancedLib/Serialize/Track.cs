@@ -173,32 +173,33 @@ public class Track : BinarySerializable
         
         s.SerializePadding(20);
 
-        layout = s.DoAt(layoutPointers, () =>
-            s.SerializeObject<Layout>(layout, onPreSerialize: x => x.size = new(trackWidth, trackHeight), name: nameof(layout))
+        palette = s.DoAt(palettePointer, () => 
+            s.SerializeObject(
+                palette,
+                onPreSerialize: x => x.paletteLength=64,
+                name: nameof(palette)
+            )
         );
 
-        minimap = s.DoAt(minimapPointer, () =>
-            s.SerializeObject<Minimap>(minimap, name: nameof(minimap))
+        layout = s.DoAt(layoutPointers, () => 
+            s.SerializeObject<Layout>(
+                layout,
+                onPreSerialize: x => x.size = new(trackWidth,trackHeight),
+                name: nameof(layout)
+            )
         );
 
         // TODO: Implement tileset lookback
         if (tilesetPartsPointer.AbsoluteOffset != palettePointer.AbsoluteOffset)
         {
-            tileset = s.DoAt(tilesetPartsPointer, () =>
-                s.SerializeObject<Tileset>(tileset, name: nameof(tileset))
+            tileset = s.DoAt(tilesetPartsPointer, () => 
+                s.SerializeObject<Tileset>(
+                    tileset,
+                    name: nameof(tileset)
+                )
             );
         }
         else { }
-
-        palette = s.DoAt(palettePointer, () =>
-            s.SerializeObject(palette, onPreSerialize: x => x.paletteLength = 64, name: nameof(palette))
-        );
-        tileBehaviors = s.DoAt(tileBehaviorsPointer, () =>
-            s.SerializeArray(tileBehaviors, 256, nameof(tileBehaviors))
-        );
-        //TODO: AI ZONES
-
-
     }
     public void UpdatePointers()
     {
