@@ -50,16 +50,15 @@ public class Tileset : BinarySerializable
             indicies = Tile.GetTileBytes(value);
         }
     }
-    CompressedBlock[] tileBlocks = new CompressedBlock[4];
+    CompressedBlock<byte>[] tileBlocks = new CompressedBlock<byte>[4];
     public override void SerializeImpl(SerializerObject s)
     {
         Pointer basePointer = s.CurrentPointer;
         tilePointers = s.SerializePointerArray(tilePointers,4,PointerSize.Pointer16, basePointer, name: nameof(tilePointers));
         for (int i = 0; i < tilePointers.Length; i++)
         {
-            s.DoAt(tilePointers[i], () =>
-                tileBlocks[i] = s.SerializeObject<CompressedBlock>(tileBlocks[i], name: $"layoutPart{i}")
-            );
+            s.Goto(tilePointers[i]);
+            tileBlocks[i] = s.SerializeObject<CompressedBlock<byte>>(tileBlocks[i], onPreSerialize: x => x.dataLength = 4096, name: $"layoutPart{i}");
         }
     }
     public override void RecalculateSize()
@@ -70,7 +69,7 @@ public class Tileset : BinarySerializable
 
         for (int i = 0; i < tileBlocks.Length; i++)
         {
-            CompressedBlock block = tileBlocks[i];
+            CompressedBlock<byte> block = tileBlocks[i];
             tilePointers[i] = new Pointer(position, tilePointers[i].File, tilePointers[i].Anchor, PointerSize.Pointer16);
             block.RecalculateSize();
             position += (int)block.SerializedSize;

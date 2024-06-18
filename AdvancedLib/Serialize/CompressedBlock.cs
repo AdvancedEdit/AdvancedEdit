@@ -8,15 +8,30 @@ using System.Threading.Tasks;
 
 namespace AdvancedLib.Serialize
 {
-    public class CompressedBlock : BinarySerializable
+    public class CompressedBlock<T> : BinarySerializable where T : struct
     {
-        public byte[] data;
+        public T[] data;
+        public ushort dataLength;
         public override void SerializeImpl(SerializerObject s)
         {
             s.DoEncoded(new LZSSEncoder(), () =>
-            {
-                data = s.SerializeArray(data, 4096, "CompressedBlock");
-            });
+                data = s.SerializeArray<T>(data, dataLength, "CompressedBlock")
+            );
+        }
+        public override void RecalculateSize()
+        {
+            base.RecalculateSize();
+        }
+    }
+    public class CompressedObjectBlock<T> : BinarySerializable where T : BinarySerializable, new()
+    {
+        public T[] data;
+        public ushort dataLength;
+        public override void SerializeImpl(SerializerObject s)
+        {
+            s.DoEncoded(new LZSSEncoder(), () =>
+                data = s.SerializeObjectArray<T>(data, dataLength, name: "CompressedBlock")
+            );
         }
     }
 }

@@ -3,29 +3,15 @@ using BinarySerializer;
 namespace AdvancedLib.Serialize;
 
 public class AiTarget : BinarySerializable{
-    byte data {get; set;}
-    public byte intersection {
-        get {
-            return (byte)((data & 0xf0)>>8);
-        }
-        set {
-            data = (byte)(((value & 0x0f)<<8) | (data & 0x0f));
-        }
-    }
-    public byte speed {
-        get {
-            return (byte)(data & 0x0f);
-        }
-        set {
-            data = (byte)((value & 0xf) | (data & 0xf0));
-        }
-    }
-    public byte positionX {get; set;}
-    public byte positionY {get; set;}
+    public ushort data1 { get; set; }
+    public ushort data2 { get; set; }
+    public ushort data3 { get; set; }
+    public ushort data4 { get; set; }
     public override void SerializeImpl(SerializerObject s)
     {
-        data = s.Serialize(data, "speed and intersection");
-        positionX = s.Serialize(positionX, nameof(positionX));
-        positionY = s.Serialize(positionY, nameof(positionY));
+        data1 = s.Serialize(data1, nameof(data1));
+        data2 = s.Serialize(data2, nameof(data2));
+        data3 = s.Serialize(data3, nameof(data3));
+        data4 = s.Serialize(data4, nameof(data4));
     }
 }

@@ -1,4 +1,5 @@
-﻿using BinarySerializer;
+﻿using AdvancedLib.Types;
+using BinarySerializer;
 using BinarySerializer.GBA;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace AdvancedLib.Serialize
 {
     public class Minimap : BinarySerializable
     {
-        public byte[] indicies
+        /*public byte[] indicies
         {
             get
             {
-                return data.data;
+                return data.;
             }
             set
             {
@@ -36,13 +37,14 @@ namespace AdvancedLib.Serialize
                 if (value.Length != 8 * 8 * 64) throw new Exception("Bad input array!");
                 Buffer.BlockCopy(value, 0, indicies, 0, 8 * 8 * 64 * sizeof(byte));
             }
-        }
-        
-        public CompressedBlock data;
+        }*/
+
+        public Tile4[] tiles { get => tileObject.data; set => tileObject.data = value; }
+        public CompressedObjectBlock<Tile4> tileObject;
 
         public override void SerializeImpl(SerializerObject s)
         {
-            data = s.SerializeObject<CompressedBlock>(data, name: "minimap data");
+            tileObject = s.SerializeObject<CompressedObjectBlock<Tile4>>(tileObject, onPreSerialize: x => x.dataLength = 64, name: "minimap data");
         }
     }
 }

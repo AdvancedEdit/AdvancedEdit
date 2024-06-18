@@ -21,10 +21,29 @@ public class TrackManager : BinarySerializable
         tracks ??= new Track[trackPointers.Length];
         for (int i = 0; i < trackPointers.Length; i++)
         {
-            if (!(i==20|| i == 21 || i == 22 || i == 23)) // battle tracks have messed up layouts?
-            tracks[i] = s.DoAt(trackPointers[i], () => 
-                s.SerializeObject<Track>(tracks[i], name: $"track{i}")
-            );
+            if (!(i == 20 || i == 21 || i == 22 || i == 23)) // battle tracks have messed up layouts?
+            {
+                s.Goto(trackPointers[i]);
+                tracks[i] = s.SerializeObject<Track>(tracks[i], name: $"track{i}");
+            }
         }
+    }
+    public override void RecalculateSize()
+    {
+        int position = 0;
+
+        position += trackPointers.Length * 4;
+
+        for (int i = 0; i < tracks.Length; i++)
+        {
+            if (!(i==20|| i == 21 || i == 22 || i == 23))
+            {
+                trackPointers[i] = new Pointer(position, trackPointers[i].File, trackPointers[i].Anchor, trackPointers[i].Size);
+                tracks[i].RecalculateSize();
+                position += (int)tracks[i].SerializedSize;
+            }
+        }
+
+        base.RecalculateSize();
     }
 }

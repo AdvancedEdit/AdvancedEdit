@@ -1,6 +1,12 @@
 using BinarySerializer;
+using BinarySerializer.GBA;
 
 namespace AdvancedLib.Types {
+    /// <summary>
+    /// A class for 8bpp tiles
+    /// </summary>
+
+    // TODO: Refactor Tile classes into Tile8 and Tile4
     public class Tile
     {
         public byte[,] indicies;
@@ -58,6 +64,36 @@ namespace AdvancedLib.Types {
                 }
             }
             return indicesList.ToArray();
+        }
+    }
+    public class Tile4 : BinarySerializable
+    {
+        public byte[] indicies
+        {
+            get
+            {
+                byte[] output = new byte[64];
+                for (int i = 0; i < 32; i++)
+                {
+                    output[i * 2] = (byte)(rawTiles[i] & 0xf);
+                    output[i * 2 + 1] = (byte)((rawTiles[i] & 0xf0) >> 8);
+                }
+                return output;
+            }
+            set
+            {
+                rawTiles = new byte[32];
+                for (int i = 0; i < 32; i++)
+                {
+                    rawTiles[i] = (byte)(((value[i * 2]&0xf)<<8) | (value[i * 2 + 1] & 0xf));
+                }
+            }
+        }
+        public byte[] rawTiles { get; set; }
+
+        public override void SerializeImpl(SerializerObject s)
+        {
+            s.SerializeArray<byte>(rawTiles, 32, nameof(rawTiles));
         }
     }
 }

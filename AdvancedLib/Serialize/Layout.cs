@@ -47,20 +47,19 @@ public class Layout : BinarySerializable
 
     public Size size { get; set; }
 
-    public CompressedBlock[] layoutBlocks { get; set; }
+    public CompressedBlock<byte>[] layoutBlocks { get; set; }
     public override void SerializeImpl(SerializerObject s)
     {
         int partsCount = size.Width * size.Height * 4;
-        layoutBlocks = new CompressedBlock[partsCount];
+        layoutBlocks = new CompressedBlock<byte>[partsCount];
         Pointer basePointer = s.CurrentPointer;
 
         layoutPointers = s.SerializePointerArray(layoutPointers, partsCount, PointerSize.Pointer16, basePointer, name:nameof(layoutPointers));
 
         for (int i = 0; i < partsCount; i++)
         {
-            s.DoAt(layoutPointers[i], () =>
-                layoutBlocks[i] = s.SerializeObject<CompressedBlock>(layoutBlocks[i], name:$"layoutPart{i}")
-            );
+            s.Goto(layoutPointers[i]);
+            layoutBlocks[i] = s.SerializeObject<CompressedBlock<byte>>(layoutBlocks[i], onPreSerialize: x => x.dataLength = 4096, name: $"layoutPart{i}");
         }
     }
     public override void RecalculateSize()
@@ -71,7 +70,7 @@ public class Layout : BinarySerializable
 
         for (int i = 0; i < layoutBlocks.Length; i++)
         {
-            CompressedBlock block = layoutBlocks[i];
+            CompressedBlock<byte> block = layoutBlocks[i];
             layoutPointers[i] = new Pointer(position, layoutPointers[i].File, layoutPointers[i].Anchor, PointerSize.Pointer16);
             block.RecalculateSize();
             position += (int)block.SerializedSize;

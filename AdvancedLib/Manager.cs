@@ -73,6 +73,9 @@ public class Manager
     /// Reserialize entire ROM
     /// </summary>
     public void Save(string? path){
+        // Updates Pointers
+        trackManager.RecalculateSize();
+
         if (!File.Exists(path) && path != null) {
             File.Create(path);
             context.AddFile(new LinearFile(context, this.path, Endian.Little));
