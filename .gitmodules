@@ -1,6 +1,6 @@
-[submodule "BinarySerializer.Nintendo"]
-	path = BinarySerializer.Nintendo
-	url = https://github.com/BinarySerializer/BinarySerializer.Nintendo.git
 [submodule "BinarySerializer"]
 	path = BinarySerializer
 	url = https://github.com/BinarySerializer/BinarySerializer
+[submodule "BinarySerializer.Nintendo"]
+	path = BinarySerializer.Nintendo
+	url = https://github.com/AdvancedEdit/BinarySerializer.Nintendo.git
