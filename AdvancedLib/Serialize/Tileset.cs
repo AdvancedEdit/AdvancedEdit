@@ -1,6 +1,6 @@
 using AdvancedLib.Types;
 using BinarySerializer;
-using BinarySerializer.GBA;
+using BinarySerializer.Nintendo.GBA;
 using System.Drawing;
 using System.Linq;
 
@@ -50,11 +50,13 @@ public class Tileset : BinarySerializable
             indicies = Tile.GetTileBytes(value);
         }
     }
-    CompressedBlock<byte>[] tileBlocks = new CompressedBlock<byte>[4];
+    CompressedBlock<byte>[] tileBlocks;
     public override void SerializeImpl(SerializerObject s)
     {
         Pointer basePointer = s.CurrentPointer;
         tilePointers = s.SerializePointerArray(tilePointers,4,PointerSize.Pointer16, basePointer, name: nameof(tilePointers));
+        s.SerializePadding(24); // make sure pointer table has length of 32
+        tileBlocks = s.InitializeArray(tileBlocks, 4);
         for (int i = 0; i < tilePointers.Length; i++)
         {
             s.Goto(tilePointers[i]);
@@ -65,7 +67,7 @@ public class Tileset : BinarySerializable
     {
         int position = 0;
 
-        position = tilePointers.Length * 2;
+        position = 32;
 
         for (int i = 0; i < tileBlocks.Length; i++)
         {

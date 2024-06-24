@@ -15,16 +15,20 @@ public class TrackManager : BinarySerializable
     {
         Pointer basePointer = s.GetPreDefinedPointer(Manager.region);
 
-        trackPointers = s.DoAt(basePointer, () =>
-            s.SerializePointerArray(trackPointers, 48, PointerSize.Pointer32, basePointer, name: nameof(trackPointers))
+        s.DoAt(basePointer, () =>
+            trackPointers = s.SerializePointerArray(trackPointers, 48, PointerSize.Pointer32, basePointer, name: nameof(trackPointers))
         );
-        tracks ??= new Track[trackPointers.Length];
+        tracks = s.InitializeArray(tracks, trackPointers.Length);
+        
         for (int i = 0; i < trackPointers.Length; i++)
         {
             if (!(i == 20 || i == 21 || i == 22 || i == 23)) // battle tracks have messed up layouts?
             {
                 s.Goto(trackPointers[i]);
                 tracks[i] = s.SerializeObject<Track>(tracks[i], name: $"track{i}");
+            } else
+            {
+
             }
         }
     }

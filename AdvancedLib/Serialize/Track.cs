@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AdvancedLib.Types;
 using BinarySerializer;
-using BinarySerializer.GBA;
+using BinarySerializer.Nintendo.GBA;
 
 namespace AdvancedLib.Serialize;
 
@@ -28,7 +28,7 @@ public class Track : BinarySerializable
     public Pointer tilesetPartsPointer { get; set; }
     public Tileset tileset { get; set; }
     public Pointer palettePointer { get; set; }
-    public Palette palette { get; set; }
+    public AdvancedLib.Types.Palette palette { get; set; }
     public Pointer tileBehaviorsPointer { get; set; }
     public byte[] tileBehaviors { get; set; } // TODO implement behaviors type
     public Pointer gameObjectsPointer { get; set; }
@@ -49,7 +49,14 @@ public class Track : BinarySerializable
     public ObjectGfx? objectGfx { get; set; }
     public MultiObjectGfx? multiObjectGfx { get; set; }
     public Pointer objectPalettePointer { get; set; }
-    public Palette objectPalette { get; set; }
+    public AdvancedLib.Types.Palette objectPalette { get; set; }
+
+    private byte[] unk0;
+    private byte[] unk1;
+    private byte[] unk2;
+    private byte[] unk3;
+    private byte[] unk4;
+    private byte[] unk5;
     #endregion
 
     public override void SerializeImpl(SerializerObject s)
@@ -74,14 +81,16 @@ public class Track : BinarySerializable
             nameof(trackHeight)
         );
 
-        s.SerializePadding(42);
+        unk0 = s.SerializeArray(unk0, 42, "Padding - unk");
+        //s.SerializePadding(42);
         
         tilesetLookback = s.Serialize<uint>(
             tilesetLookback,
             nameof(tilesetLookback)
         );
 
-        s.SerializePadding(12);
+        unk1 = s.SerializeArray(unk1, 12, "Padding - unk");
+        //s.SerializePadding(12);
 
         layoutPointer = s.SerializePointer(
             layoutPointer,
@@ -89,8 +98,9 @@ public class Track : BinarySerializable
             basePointer,
             name: nameof(layoutPointer)
         );
-        
-        s.SerializePadding(60);
+
+        unk2 = s.SerializeArray(unk2, 60, "Padding - unk");
+        //s.SerializePadding(60);
 
         tilesetPartsPointer = s.SerializePointer(
             tilesetPartsPointer,
@@ -139,8 +149,9 @@ public class Track : BinarySerializable
             data0,
             name: nameof(data0)
         );
-        
-        s.SerializePadding(32);
+
+        unk3 = s.SerializeArray(unk3, 32, "Padding - unk");
+        //s.SerializePadding(32);
 
         trackRoutine = s.Serialize<uint>(
             trackRoutine,
@@ -162,8 +173,9 @@ public class Track : BinarySerializable
             basePointer,
             name: nameof(trackAIPointer)
         );
-        
-        s.SerializePadding(20);
+
+        unk4 = s.SerializeArray(unk4, 20, "Padding - unk");
+        //s.SerializePadding(20);
 
         objectGfxPointer = s.SerializePointer(
             objectGfxPointer,
@@ -179,7 +191,7 @@ public class Track : BinarySerializable
             name: nameof(objectPalettePointer)
         );
 
-        s.SerializePadding(20);
+        unk5 = s.SerializeArray(unk5, 20, "Padding - unk");
         #endregion
 
         #region Serialize objects
@@ -198,7 +210,7 @@ public class Track : BinarySerializable
         );
 
         // TODO: Implement tileset lookback
-        if (tilesetPartsPointer.AbsoluteOffset != palettePointer.AbsoluteOffset)
+        if (tilesetLookback == 0)
         {
             s.Goto(tilesetPartsPointer);
             tileset = s.SerializeObject<Tileset>(
@@ -254,7 +266,7 @@ public class Track : BinarySerializable
         if (objectPalettePointer.SerializedOffset != 0)
         {
             s.Goto(objectPalettePointer);
-            objectPalette = s.SerializeObject<Palette>(
+            objectPalette = s.SerializeObject<AdvancedLib.Types.Palette>(
                 objectPalette,
                 onPreSerialize: x => x.paletteLength = 16,
                 name: nameof(layout)
@@ -307,7 +319,7 @@ public class Track : BinarySerializable
         minimapPointer = new Pointer(currentSize, minimapPointer.File, minimapPointer.Anchor, minimapPointer.Size);
         minimap.RecalculateSize();
         currentSize += (int)minimap.SerializedSize;
-        if (tilesetPartsPointer.AbsoluteOffset != palettePointer.AbsoluteOffset)
+        if (tilesetLookback == 0)
         {
             tilesetPartsPointer = new Pointer(currentSize, tilesetPartsPointer.File, tilesetPartsPointer.Anchor, tilesetPartsPointer.Size);
             tileset.RecalculateSize();

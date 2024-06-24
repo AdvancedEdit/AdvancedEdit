@@ -88,8 +88,12 @@ namespace AdvancedLib.Serialize
         public override void SerializeImpl(SerializerObject s)
         {
             Pointer basePointer = s.CurrentPointer;
-            objectPointers = s.SerializePointerArrayUntil(objectPointers, x => x.SerializedOffset == 0, null, PointerSize.Pointer16, basePointer, name: nameof(objectPointers));
-            objectPointers = objectPointers[0..(objectPointers.Length - 1)]; // Remove empty array element
+            
+            // Assume 2 because im dumb and every track has 2
+            objectPointers = s.SerializePointerArray(objectPointers, 2, PointerSize.Pointer16, basePointer, name: nameof(objectPointers));
+            
+            // This was removing every element when I wrote back
+            //objectPointers = objectPointers[0..(objectPointers.Length - 1)]; // Remove empty array element
             objectLengths ??= new ushort[objectPointers.Length];
             tileObjects ??= new CompressedObjectBlock<Tile4>[objectPointers.Length];
 

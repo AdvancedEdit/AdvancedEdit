@@ -5,11 +5,11 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedLib", "AdvancedLib\AdvancedLib.csproj", "{F8D56792-56BD-4302-9A71-5D83693B540D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinarySerializer", "BinarySerializer\BinarySerializer.csproj", "{628E1B9A-272B-4FB7-A2EA-906190BDCF19}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinarySerializer.GBA", "BinarySerializer.Nintendo\BinarySerializer.GBA.csproj", "{A3858CE4-34CF-4737-9ECB-A39A544F7388}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedEdit", "AdvancedEdit\AdvancedEdit.csproj", "{D1A62EE7-A0E7-4F34-A651-E174352239B3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinarySerializer", "BinarySerializer\src\BinarySerializer.csproj", "{1C299513-DF73-475A-B496-8D2B0250648C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinarySerializer.Nintendo", "BinarySerializer.Nintendo\src\BinarySerializer.Nintendo.csproj", "{C8C4BC5F-8262-4FA2-AC0F-1B3297DC01B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,18 +21,18 @@ Global
 		{F8D56792-56BD-4302-9A71-5D83693B540D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8D56792-56BD-4302-9A71-5D83693B540D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8D56792-56BD-4302-9A71-5D83693B540D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{628E1B9A-272B-4FB7-A2EA-906190BDCF19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{628E1B9A-272B-4FB7-A2EA-906190BDCF19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{628E1B9A-272B-4FB7-A2EA-906190BDCF19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{628E1B9A-272B-4FB7-A2EA-906190BDCF19}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A3858CE4-34CF-4737-9ECB-A39A544F7388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3858CE4-34CF-4737-9ECB-A39A544F7388}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3858CE4-34CF-4737-9ECB-A39A544F7388}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3858CE4-34CF-4737-9ECB-A39A544F7388}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D1A62EE7-A0E7-4F34-A651-E174352239B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1A62EE7-A0E7-4F34-A651-E174352239B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1A62EE7-A0E7-4F34-A651-E174352239B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1A62EE7-A0E7-4F34-A651-E174352239B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C299513-DF73-475A-B496-8D2B0250648C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C299513-DF73-475A-B496-8D2B0250648C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C299513-DF73-475A-B496-8D2B0250648C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C299513-DF73-475A-B496-8D2B0250648C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8C4BC5F-8262-4FA2-AC0F-1B3297DC01B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8C4BC5F-8262-4FA2-AC0F-1B3297DC01B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8C4BC5F-8262-4FA2-AC0F-1B3297DC01B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8C4BC5F-8262-4FA2-AC0F-1B3297DC01B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

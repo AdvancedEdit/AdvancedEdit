@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using AdvancedLib.Serialize;
 using BinarySerializer;
-using BinarySerializer.GBA;
+using BinarySerializer.Nintendo.GBA;
 
 /*
 Notes:
@@ -72,15 +72,16 @@ public class Manager
     /// <summary>
     /// Reserialize entire ROM
     /// </summary>
-    public void Save(string? path){
+    public void Save(string? path) {
         // Updates Pointers
         trackManager.RecalculateSize();
 
-        if (!File.Exists(path) && path != null) {
-            File.Create(path);
-            context.AddFile(new LinearFile(context, this.path, Endian.Little));
-        }
-        
+
+        if (path != null) {
+            context.AddFile(new LinearFile(context, path, Endian.Little));
+            if (!File.Exists(path)) File.Copy(this.path, path);
+        };
+
         FileFactory.Write<TrackManager>(context, path ?? this.path);
     }
 }

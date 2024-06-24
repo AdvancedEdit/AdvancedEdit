@@ -1,6 +1,6 @@
 ﻿using AdvancedLib.Types;
 using BinarySerializer;
-using BinarySerializer.GBA;
+using BinarySerializer.Nintendo.GBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;

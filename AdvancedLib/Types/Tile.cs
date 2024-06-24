@@ -1,5 +1,5 @@
 using BinarySerializer;
-using BinarySerializer.GBA;
+using BinarySerializer.Nintendo.GBA;
 
 namespace AdvancedLib.Types {
     /// <summary>
@@ -93,7 +93,7 @@ namespace AdvancedLib.Types {
 
         public override void SerializeImpl(SerializerObject s)
         {
-            s.SerializeArray<byte>(rawTiles, 32, nameof(rawTiles));
+            rawTiles = s.SerializeArray<byte>(rawTiles, 32, nameof(rawTiles));
         }
     }
 }

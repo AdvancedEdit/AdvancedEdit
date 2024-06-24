@@ -18,13 +18,10 @@ public class TrackAI : BinarySerializable{
         );
         zonesPointer = s.SerializePointer(
             zonesPointer,
-            PointerSize.Pointer8,
+            PointerSize.Pointer16,
             anchor: basePointer,
             name:nameof(zonesPointer)
         );
-
-        s.SerializePadding(1);
-
         targetsPointer = s.SerializePointer(
             targetsPointer,
             PointerSize.Pointer16,
@@ -44,15 +41,17 @@ public class TrackAI : BinarySerializable{
             zonesCount * 3,
             name: nameof(aiZones)
         );
+        s.SerializePadding(3);
     }
     public override void RecalculateSize()
     {
         int position = 5;
 
         zonesPointer = new Pointer(position, zonesPointer.File, zonesPointer.Anchor, zonesPointer.Size);
-        position += zonesCount * 10;
+        position += zonesCount * 12; // each zone is 12 bytes long.
 
         targetsPointer = new Pointer(position, targetsPointer.File, targetsPointer.Anchor, targetsPointer.Size);
+        position += zonesCount * 3 * 8;
 
         base.RecalculateSize();
     }

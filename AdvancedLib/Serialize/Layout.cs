@@ -1,5 +1,5 @@
 ﻿using BinarySerializer;
-using BinarySerializer.GBA;
+using BinarySerializer.Nintendo.GBA;
 using System;
 using System.Drawing;
 
@@ -8,7 +8,7 @@ namespace AdvancedLib.Serialize;
 
 public class Layout : BinarySerializable
 {
-    public Pointer?[] layoutPointers { get; set; }
+    public Pointer[] layoutPointers { get; set; }
     public byte[] indicies
     {
         get
@@ -51,22 +51,26 @@ public class Layout : BinarySerializable
     public override void SerializeImpl(SerializerObject s)
     {
         int partsCount = size.Width * size.Height * 4;
-        layoutBlocks = new CompressedBlock<byte>[partsCount];
+        int paddingLen = 4 * (32 - partsCount);
+        layoutBlocks = s.InitializeArray(layoutBlocks, partsCount);
+
         Pointer basePointer = s.CurrentPointer;
 
         layoutPointers = s.SerializePointerArray(layoutPointers, partsCount, PointerSize.Pointer16, basePointer, name:nameof(layoutPointers));
+        s.SerializePadding(paddingLen);
 
-        for (int i = 0; i < partsCount; i++)
-        {
+        s.DoArray(layoutBlocks, (obj, i, name) => {
             s.Goto(layoutPointers[i]);
-            layoutBlocks[i] = s.SerializeObject<CompressedBlock<byte>>(layoutBlocks[i], onPreSerialize: x => x.dataLength = 4096, name: $"layoutPart{i}");
-        }
+            return s.SerializeObject<CompressedBlock<byte>>(obj, onPreSerialize: x => x.dataLength = 4096, name: name);
+        }, name: nameof(layoutBlocks));
+
+        s.SerializePadding(4-(s.CurrentAbsoluteOffset%4), name: "Alignment");
     }
     public override void RecalculateSize()
     {
         int position = 0;
 
-        position = layoutPointers.Length * 2;
+        position = 32;
 
         for (int i = 0; i < layoutBlocks.Length; i++)
         {
